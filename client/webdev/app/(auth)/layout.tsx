@@ -14,8 +14,9 @@ const AuthLayout = ({children} : Readonly<{
 }>) => {
   return (
     <div>
-        <nav>AuthNav</nav>
-        {children}
+      layout
+        {/* <nav>AuthNav</nav>
+        {children} */}
     </div>
   )
 }
