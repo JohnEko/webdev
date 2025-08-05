@@ -23,7 +23,7 @@ export const signUp = async (values: RegisterSchemaType) => {
     return {error: "Email already in use!"}
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10)
 
   await db.user.create({
     data: {
