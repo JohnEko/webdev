@@ -10,8 +10,12 @@ import SocialAuth from './SocialAuth'
 import { startTransition, useState, useTransition } from 'react'
 import { login } from '@/actions/auth/login'
 import Alert from '../common/Alert'
+import { useRouter } from 'next/navigation'
+import { LOGIN_REDIRECT } from '@/routes'
 
 const LoginForm = () => {
+
+  const router = useRouter()
 
   const [isPending, setIsPending] = useTransition()
   const [error, setError] = useState<string | undefined>('')
@@ -26,7 +30,10 @@ const LoginForm = () => {
         login(data).then((res) => {
           if(res?.error){
             setError(res?.error)
-            //setSuccess(res?.error)
+
+          }
+          if(!res?.error){
+            router.push(LOGIN_REDIRECT)
           }
         })
       })
