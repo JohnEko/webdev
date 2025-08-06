@@ -3,6 +3,8 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/layout/Navbar";
+import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react";
 
 
 const poppins = Poppins({
@@ -18,12 +20,16 @@ export const metadata: Metadata = {
   icons: { icon : '/logo.svg'}
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+//  creating session for users
+  const session = await auth()
+
   return (
+    <SessionProvider session={session}>
     <html lang="en">
       <body
         className={cn('antialiased flex flex-col min-h-screen px-2', poppins.variable)}
@@ -38,5 +44,6 @@ export default function RootLayout({
     
       </body>
     </html>
+  </SessionProvider>
   );
 }
