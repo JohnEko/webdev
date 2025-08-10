@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import React from "react";
 import {
@@ -11,7 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { LogOut, Pencil, Shield, User, UserRound } from "lucide-react";
 import { FaRegBookmark } from "react-icons/fa";
-import { signIn, signOut } from "next-auth/react";
+import {signOut } from "next-auth/react";
 
 const UserButton = () => {
   return (
@@ -59,9 +59,9 @@ const UserButton = () => {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem>
-            <button className="flex items-center gap-2">
-              <div onClick={() => signOut()}></div>
-              <LogOut href={'/login'} size={18} />
+            <button onClick={() => signOut()} className="flex items-center gap-2">
+              {/* <div onClick={() => signOut()}></div> */}
+              <LogOut size={18} />
               Signout
             </button>
           </DropdownMenuItem>
