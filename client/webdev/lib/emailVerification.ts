@@ -15,7 +15,9 @@ export const getVerificationTokenByEmail = async (email: string) => {
 
 export const generateEmailVerificationToken = async (email: string) => {
     const token = uuidv4()
-    const expires = new Date(new Date().getTime() * 3600 * 1000)
+    const expires = new Date(new Date().getTime() + 3600 * 1000);
+
+    //const expires = new Date(new Date().getTime() * 3600 * 1000)
 
     const existingToken = await getVerificationTokenByEmail(email)
 
@@ -31,8 +33,11 @@ export const generateEmailVerificationToken = async (email: string) => {
     return emailVerificationToken
 }
 
-export const sendEmailVerificationToken = async (email: string, token: string) => {
-    const resend = new Resend(process.env.RESEND_API_KEY)
+export const sendEmailVerificationToken = async (
+    email: string, 
+    token: string
+) => {
+    const resend = new Resend(process.env.NEXT_PUBLIC_API_KEY)
     const emailVerificationLink = `${process.env.BASE_URL}/email-verification?token=${token}`
 
     const res = await resend.emails.send({

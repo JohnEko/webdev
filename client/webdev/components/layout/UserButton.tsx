@@ -60,9 +60,8 @@ const UserButton = () => {
 
           <DropdownMenuItem>
             <button onClick={() => signOut()} className="flex items-center gap-2">
-              {/* <div onClick={() => signOut()}></div> */}
               <LogOut size={18} />
-              Signout
+              Sign Out
             </button>
           </DropdownMenuItem>
         </DropdownMenuContent>

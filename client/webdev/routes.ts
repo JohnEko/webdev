@@ -1,4 +1,10 @@
-export const publicRoutes = ["/", "/email-verification"]
+export const publicRoutes = [
+    "/", 
+    "/email-verification",
+     "/password-email-form",
+     "/password-reset-form"
+
+    ]
 
 export const authRoutes = ["/login", "/register"]
 
