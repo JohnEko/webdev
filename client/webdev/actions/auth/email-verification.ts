@@ -4,7 +4,7 @@ import { db } from "@/lib/db"
 import { getUserByEmail } from "@/lib/user"
 
 export const verifyEmail = async (token: string) => {
-    const emailVerificationToken = await db.emailVerification.findFirst({
+    const emailVerificationToken = await db.emailVerification.findUnique({
         where: {token}
     })
 

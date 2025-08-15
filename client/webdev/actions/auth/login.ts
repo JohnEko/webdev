@@ -1,12 +1,10 @@
 "use server";
 
 import { signIn } from "@/auth";
-import { db } from "@/lib/db";
 import { generateEmailVerificationToken, sendEmailVerificationToken } from "@/lib/emailVerification";
 import { getUserByEmail } from "@/lib/user";
 import { LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema, LoginSchemaType } from "@/schemas/LoginSchema";
-import { RegisterSchema, RegisterSchemaType } from "@/schemas/RegisterSchema";
 import { AuthError } from "next-auth";
 
 // this helps us to comfirm the user is successful login
@@ -28,10 +26,12 @@ export const login = async (values: LoginSchemaType) => {
   }
 
   if(!user.emailVerified){
-    const emailVerification = await generateEmailVerificationToken(user.email)
-
-    const emailVerificationToken = await generateEmailVerificationToken(email)
-      const {error} = await sendEmailVerificationToken(emailVerificationToken.email, emailVerificationToken.token)
+ //send message to user to verify user email 
+    const emailVerificationToken = await generateEmailVerificationToken(user.email)
+      const {error} = await sendEmailVerificationToken(
+        emailVerificationToken.email, 
+        emailVerificationToken.token
+      )
     
       if(error){
         return {error: "Something went wrong while sending verification email! Try to login to resend the verification email"}

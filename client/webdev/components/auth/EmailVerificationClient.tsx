@@ -8,7 +8,7 @@ import Alert from '../common/Alert'
 import Button from '../common/Button'
 
 const EmailVerificationClient = () => {
-    const router = useRouter()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const [error, setError] = useState<string | undefined>('')
@@ -28,12 +28,12 @@ const EmailVerificationClient = () => {
     //verifyEmail(token)
   }, [token])
   return (
-    <div>
-        <Heading title="WEBDEV.blog" center/>
+    <div className='border-2 rounded-md p-2 flex flex-col gap-2 items-center my-8 max-w-[400px] mx-auto'>
+        <Heading title="WEBDEV.blog" center />
         {pending && <div>Verifying Email....</div>}
-        {success && <Alert message={success} error/>}
+        {success && <Alert message={success} success/>}
         {error && <Alert message={error} error/>}
-        {success && <Button type="submit" label="Login" onClick={() => router.push("/login")}/>}
+        {success && <Button type="submit" label="Login" onClick={() => router.push("/login")} />}
 
     </div>
   )
