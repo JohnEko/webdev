@@ -20,6 +20,8 @@ model User {
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  role UserRole @default(USER)
 }
  
 model Account {
@@ -59,4 +61,9 @@ model PasswordResetToken{
   expires DateTime
 
   @@unique([email, token])
+}
+
+enum UserRole{
+  ADMIN
+  USER
 }

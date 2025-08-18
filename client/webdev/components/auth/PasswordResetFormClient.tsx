@@ -8,9 +8,9 @@ import Heading from '../common/Heading'
 import FormField from '../common/FormField'
 import Alert from '../common/Alert'
 import Button from '../common/Button'
-import { passwordEmail } from '@/actions/auth/password-email'
 import { useSearchParams } from 'next/navigation'
 import { PasswordResetSchema, PasswordResetSchemaType } from '@/schemas/PasswordResetSchema'
+import { passwordReset } from '@/actions/auth/password-reset'
 
 const PasswordResetFormClient = () => {
     const searchParams = useSearchParams()
@@ -26,16 +26,16 @@ const PasswordResetFormClient = () => {
     const onSubmit: SubmitHandler<PasswordResetSchemaType> = (data) => { 
         setError('')
         startTransition(() => {
-            // passwordEmail(data).then((res) => {
-            //   if(res?.error){
-            //     setError(res.error)
+            passwordReset(data, token).then((res) => {
+              if(res?.error){
+                setError(res.error)
     
-            //   }
+              }
               
-            //   if(res?.success){
-            //     setSuccess(res.success)
-            //   }
-            // })
+              if(res?.success){
+                setSuccess(res.success)
+              }
+            })
           })
       }
     
