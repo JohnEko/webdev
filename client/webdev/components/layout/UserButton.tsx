@@ -12,11 +12,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { LogOut, Pencil, Shield, User, UserRound } from "lucide-react";
 import { FaRegBookmark } from "react-icons/fa";
 import {signOut, useSession } from "next-auth/react";
+import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context";
+import { useRouter } from "next/navigation";
 
 const UserButton = () => {
 
   const session = useSession()
   const imageUrl = session.data?.user.image || ""
+  const router = useRouter()
 
   return (
     <div>
@@ -39,7 +42,7 @@ const UserButton = () => {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem>
-            <button className="flex items-center gap-2">
+            <button onClick={() => router.push('/blog/create')} className="flex items-center gap-2">
               <Pencil size={18} />
               Create Post
             </button>
