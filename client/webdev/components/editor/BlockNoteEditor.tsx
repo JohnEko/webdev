@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { useCreateBlockNote } from '@blocknote/react'
 import { PartialBlock } from '@blocknote/core'
 import { BlockNoteView } from "@blocknote/mantine"
@@ -27,12 +26,14 @@ const BlockNoteEditor = ({onChange, initialContent, editable}: BlockNoteEditorPr
         const res = await edgestore.publicFiles.upload({file})
 
         return res.url
-    }
+    };
 
     const editor = useCreateBlockNote({
         initialContent: initialContent ? JSON.parse(initialContent) as PartialBlock[] : undefined,
         uploadFile: handleImageUpload
+        
         })
+        
 
   return (
     <BlockNoteView editor={editor} 
