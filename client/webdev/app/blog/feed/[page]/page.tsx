@@ -1,7 +1,9 @@
 import { getPublishedBlogs } from '@/actions/blogs/get-published-blogs'
+import ListBlog from '@/components/blog/ListBlog'
 import Alert from '@/components/common/Alert'
 import React from 'react'
 
+//this is a server conponent
 
 interface BlogFeedProps{
     params: Promise<{page: string}>
@@ -17,12 +19,15 @@ const BlogFeed = async ({params}: BlogFeedProps) => {
 
     if(error) return <Alert message='Error fetching bogs' />
 
-    if(success) return <Alert message='No post' />
+    if(!success) return <Alert message='No post' />
 
     const { blog, hasMore}: any = success
 
   return (
-    <div>BlogFeed</div>
+    <div>
+      <ListBlog  blog={blog} hasMore={hasMore} currentPage={currentPage} />
+      
+    </div>
   )
 }
 
