@@ -10,8 +10,10 @@ import queryString from 'query-string'
 
 const SearchIputs = () => {
     const router = useRouter()
-    const [value, setValue] = useState('')
     const params = useSearchParams()
+    const title = params.get('title')
+    const [value, setValue] = useState(title || '')
+    
 
     useEffect(() => {
       let currentQuerry ={}
