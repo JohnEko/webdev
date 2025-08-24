@@ -7,21 +7,26 @@ import React from 'react'
 
 interface BlogFeedProps{
     params: Promise<{page: string}>
+    searchParams: Promise<{
+      tag:string
+    }>
 }
 
 
-const BlogFeed = async ({params}: BlogFeedProps) => {
+const BlogFeed = async ({params, searchParams}: BlogFeedProps) => {
     const { page } = await params
+    const searchObj = await searchParams
+
     // convert the string to int using parseInt
     const currentPage = parseInt(page, 10) || 1
 
-    const {success, error} = await getPublishedBlogs({ page: currentPage, limit: 5})
+    const {success, error} = await getPublishedBlogs({ page: currentPage, limit: 5, searchObj})
 
     if(error) return <Alert message='Error fetching bogs' />
 
     if(!success) return <Alert message='No post' />
 
-    const { blog, hasMore}: any = success
+    const { blog, hasMore} = success
 
   return (
     <div>

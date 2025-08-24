@@ -10,6 +10,7 @@ import UserButton from './UserButton'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
+import Tags  from './Tags'
 
 const Navbar = () => {
 
@@ -57,6 +58,7 @@ const Navbar = () => {
         </div>
     
       </Container>
+      <Tags />
     </nav>
   )
 }

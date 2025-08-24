@@ -13,9 +13,12 @@ import BlockNoteEditor from "../editor/BlockNoteEditor"
 import Button from "../common/Button"
 import Alert from "../common/Alert"
 import { createBlog } from "@/actions/blogs/create-blog"
+import { Blog } from "@prisma/client"
+import { editBlog } from "@/actions/blogs/edit-blog"
 
 //uploading images to edgestore
-const CreateBlogForm = () => {
+//passing the blog optional incase we want to edit our post blog
+const CreateBlogForm = ({blog}: {blog?: Blog}) => {
 
   const session = useSession()
   const userId = session.data?.user.userId
@@ -31,7 +34,14 @@ const CreateBlogForm = () => {
 
   const {register, handleSubmit, formState: {errors}, setValue} = useForm<BlogSchemaType>({
     resolver: zodResolver(BlogSchema),
-    defaultValues: {
+    defaultValues: blog? {
+      userId: blog.userId,
+      isPublished: blog.isPublished,
+      title: blog.title,
+      content: blog.content,
+      coverImage: blog.coverImage || undefined,
+      tags: blog.tags
+    }: {
       userId,
       isPublished: false
     }
@@ -56,6 +66,14 @@ const CreateBlogForm = () => {
       })
     }
   }, [content])
+
+  useEffect(()=> {
+    if(blog?.coverImage) {
+      setUploadedCover(blog.coverImage)
+    }
+
+  }, [blog?.coverImage])
+
   //create other funtion for content
   const onChange = (content: string) => {
     setContent(content)
@@ -71,8 +89,10 @@ const CreateBlogForm = () => {
       return setError("Select only 4 tags")
 
     }
+    //checking if blog is edithing or published
     startPublishing(() => {
-      createBlog({...data, isPublished: true}).then(data => {
+      if(blog){
+         editBlog({...data, isPublished: true}, blog.id).then(data => {
         if(data.error) {
           setError(data.error)
         }
@@ -81,6 +101,20 @@ const CreateBlogForm = () => {
           setSuccess(data.success)
         }
       })
+
+      } else {
+         createBlog({...data, isPublished: true}).then(data => {
+        if(data.error) {
+          setError(data.error)
+        }
+
+        if(data.success) {
+          setSuccess(data.success)
+        }
+      })
+        
+      }
+     
     })
 
   }
@@ -90,11 +124,25 @@ const CreateBlogForm = () => {
     setSuccess('')
     setError('')
 
+    
+
     // if(data.tags.length > 4){
     //   return setError("Select only 4 tags")
 
     // }
     startSavingAsDraft(() => {
+      if(blog){
+         editBlog({...data, isPublished: false}, blog.id).then(data => {
+        if(data.error) {
+          setError(data.error)
+        }
+
+        if(data.success) {
+          setSuccess(data.success)
+        }
+      })
+
+      } else {
       createBlog({...data, isPublished: false}).then(data => {
         if(data.error) {
           setError(data.error)
@@ -104,6 +152,7 @@ const CreateBlogForm = () => {
           setSuccess(data.success)
         }
       })
+    }
     })
 
   }
@@ -147,7 +196,8 @@ const CreateBlogForm = () => {
             </span>}
 
             </fieldset>
-            <BlockNoteEditor onChange={onChange}/>
+            {/* to edit blog */}
+            <BlockNoteEditor onChange={onChange} initialContent={blog?.content ? blog.content : ''}/>
             {errors.content && errors.content.message && <span className="text-sm text-rose-400">
               {errors.content.message}
             </span>}
