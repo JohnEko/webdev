@@ -6,6 +6,10 @@ export const tags = [
     "TailwindCSS",
     "JavaScript",
     "React",
-    "Next.js"
+    "Next.js",
+    "Python",
+    "Scala",
+    "Linux",
+    "JAVA"
 
 ]

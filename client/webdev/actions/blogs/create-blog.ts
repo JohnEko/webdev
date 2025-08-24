@@ -21,9 +21,7 @@ export const createBlog = async (values: BlogSchemaType) => {
     }
 
     await db.blog.create({
-        data: {
-          ...vFileds.data
-        }
+        data: {...vFileds.data}
     })
 
     if(isPublished){
