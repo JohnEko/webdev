@@ -4,6 +4,7 @@ import { db } from "@/lib/db"
 
 //help to get the limit og a page in the blog this is Pagination
 //we accepting our search params in publish blogs
+//also search for title
 export const getPublishedBlogs = async({page =1,  limit=5, searchObj}:{
     page: number,
     limit: number,

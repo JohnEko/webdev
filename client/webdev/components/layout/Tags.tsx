@@ -1,11 +1,16 @@
 import { tags } from '@/lib/tags'
 import Tag from '../common/Tags'
 import "./Tags.css"
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 
 const Tags = () => {
     const params = useSearchParams()
     const tag = params.get('tag')
+    const pathName = usePathname()
+
+    const isFeedPage = pathName.includes('/blog/feed')
+    if(!isFeedPage) return null
+
   return (
     <div className='border-t'>
         <div className='max-w-[1920px] w-full mx-auto px-4 pb-0 xl:px-20'>
