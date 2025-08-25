@@ -2,6 +2,7 @@ import { Blog, User } from '@prisma/client'
 import Link from 'next/link'
 import React from 'react'
 import BlogCard from './BlogCard'
+import Pagination from './Pagination'
 
 export type BlogWithUser = Blog & {
     user: Pick<User, 'id' | 'name' | 'image'>
@@ -22,18 +23,7 @@ const ListBlog = ({blog, hasMore, currentPage, isUserProfile}: ListBlogProps) =>
             {blog.map((blog) => <BlogCard key={blog.id} blog={blog} isUserProfile={isUserProfile}/> )}
         </section>
 {/* Pagination of the page to the next page */}
-        <div className='flex justify-between mt-4'>
-            {<Link href={`/blog/feed/${currentPage -1}`}>
-                <span>Previouse</span>
-            </Link>}
-
-            { 
-            <Link href={`/blog/feed/${currentPage + 1}`}>
-                <span>Next</span>
-            </Link>}
-            
-            
-        </div>
+        <Pagination currentPage={currentPage} hasMore={hasMore}/>
 
     </div>
   )

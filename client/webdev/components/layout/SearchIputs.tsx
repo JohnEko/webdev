@@ -3,8 +3,9 @@
 import { Search } from 'lucide-react'
 import React, { ChangeEventHandler, useEffect, useState } from 'react'
 import { Input } from '../ui/input'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import queryString from 'query-string'
+import { useDebounceValue } from '@/hooks/useDebournceValue'
 
 
 
@@ -13,8 +14,11 @@ const SearchIputs = () => {
     const params = useSearchParams()
     const title = params.get('title')
     const [value, setValue] = useState(title || '')
-    
 
+    const pathName = usePathname()
+    const debounceValue = useDebounceValue<string>(value)
+    
+    console.log("value >>>>>", value)
     useEffect(() => {
       let currentQuerry ={}
       
@@ -24,7 +28,7 @@ const SearchIputs = () => {
       
             const updatedQuery: any = {
               ...currentQuerry,
-              title: value
+              title: debounceValue
             }
       
             const url = queryString.stringifyUrl(
@@ -40,11 +44,14 @@ const SearchIputs = () => {
       
             router.push(url)
 
-    }, [value])
+    }, [debounceValue])
 
     const handleOnChange: ChangeEventHandler<HTMLInputElement> = (e) => {
       setValue(e.target.value)
-    } 
+    }
+    
+    const isFeedPage = pathName.includes('/blog/feed')
+    if(!isFeedPage) return null
 
   return (
     <div className='relative hidden sm:block'>
