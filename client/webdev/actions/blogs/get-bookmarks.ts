@@ -1,38 +1,33 @@
-"use server"
+'use server'
 
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
 
-//help to get the limit og a page in the blog this is Pagination
-//we accepting our search params in publish blogs
-//also search for title
-export const getPublishedBlogs = async({page =1,  limit=5, searchObj}:{
+
+export const getBookmarks = async ({page =1,  limit=5}:{
     page: number,
     limit: number,
-    searchObj: {tag: string, title: string}
+    
 }) => {
-
     const skip = (page -1) * limit
-    const {tag, title} = searchObj
-
+    
     //get our session
     const session = await auth()
     const userId = session?.user.userId
 
+    if(!userId) return {error: "User not found"}
+
     try {
-        const blog = await db.blog.findMany({
+        const bookmarks = await db.bookmark.findMany({
             skip,
             take: limit,
-            orderBy: { createdAt: "desc"},
-            where: {
-                title: {
-                    contains: title,
-                    mode: "insensitive"
-                },
-                isPublished: true,
-                ...(tag ? {tags: {has:tag}}: {})
+            orderBy : {
+                createdAt: 'desc'
             },
+            where: {userId},
             include: {
+                blog: {
+                    include: {
                 user:{
                     select: {
                         id: true,
@@ -63,24 +58,22 @@ export const getPublishedBlogs = async({page =1,  limit=5, searchObj}:{
 
                 }
             }
-        })
-
-        const totalBlogCount = await db.blog.count({
-            where: {
-              title: {
-                    contains: title,
-                    mode: "insensitive"
-                },
-                isPublished: true,
-                ...(tag ? {tags: {has:tag}}: {})
+                }
             }
         })
 
-        const hasMore = totalBlogCount > page * limit
+        // we need to get the blogs from the bookmark
+        const blogs = bookmarks
+        .filter(bookmark => bookmark.blog === null)
+        .map(bookmark => bookmark.blog)
 
-        return {success: {blog, hasMore}}
-    } catch (error) {
-        return {error: "Error fetching blogs!"}
+        const totalBookmarks = await db.bookmark.count({where: {userId}})
+        const hasMore = totalBookmarks > page * limit
+
+        return {success: {blogs, hasMore}}
+
         
+    } catch (error) {
+        return {error: "Error fetching bookmarks"}
     }
 }
