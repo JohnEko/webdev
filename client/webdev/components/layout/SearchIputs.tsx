@@ -18,7 +18,7 @@ const SearchIputs = () => {
     const pathName = usePathname()
     const debounceValue = useDebounceValue<string>(value)
     
-    console.log("value >>>>>", value)
+
     useEffect(() => {
       let currentQuerry ={}
       
@@ -33,7 +33,7 @@ const SearchIputs = () => {
       
             const url = queryString.stringifyUrl(
               {
-                url: '/blog/feed/1',
+                url: window.location.href,
                 query: updatedQuery
               },
               {
@@ -50,9 +50,7 @@ const SearchIputs = () => {
       setValue(e.target.value)
     }
     
-    const isFeedPage = pathName.includes('/blog/feed')
-    if(!isFeedPage) return null
-
+  
   return (
     <div className='relative hidden sm:block'>
         <Search className='absolute top-3 left-4 h-4 w-4 text-muted-foreground'/>

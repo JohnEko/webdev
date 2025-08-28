@@ -16,7 +16,7 @@ const BlogCard = ({blog, isUserProfile}: {blog: BlogWithUser, isUserProfile?: bo
         </div>
         <div className='my-2 flex justify-between gap-6'>
             <div className='flex flex-col justify-between w-full'>
-                <Link href={`/blog/${blog.id}`} className='text-xl sm:text-2xl font-bold'>
+                <Link href={`/blog/details/${blog.id}`} className='text-xl sm:text-2xl font-bold'>
                     {blog.title}
                 </Link>
 
@@ -24,7 +24,7 @@ const BlogCard = ({blog, isUserProfile}: {blog: BlogWithUser, isUserProfile?: bo
                    {blog.tags.map((tag)=> <Tags key={tag}>{tag}</Tags>)} 
                 </div>}
                 
-                <Reactions />
+                <Reactions blog={blog}/>
             </div>
 
         </div>

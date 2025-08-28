@@ -19,6 +19,8 @@ const Navbar = () => {
   const path = usePathname()
   const router = useRouter()
 
+  const isFeedPage = path.includes('/blog/feed')
+
   useEffect(() => {
     // updating the user session
     if(!isLoggedIn && path){
@@ -36,12 +38,12 @@ const Navbar = () => {
       <Container>
      
         <div className="flex justify-between items-center gap-8">
-            <div className='flex items-center gap-1 cursor-pointer'>
+            <div className='flex items-center gap-1 cursor-pointer' onClick={() => router.push('/blog/feed/1')}>
                 <MdNoteAlt size={24}/>
                 <div className='font-bold text-xl'><Link href={"/blog/feed/1"}>WebDev</Link></div>
             </div>
-
-            <SearchIputs />
+            {isFeedPage &&  <SearchIputs />}
+           
 
               
             <div className='flex gap-5 sm:gap-8 items-center'>
