@@ -28,43 +28,43 @@ export const getBookmarks = async ({page =1,  limit=5}:{
             include: {
                 blog: {
                     include: {
-                user:{
-                    select: {
-                        id: true,
-                        name: true,
-                        image: true,
-                    }
-                },
-                _count:{
-                    select:{
-                        claps: true
-                    }
-                },
-                claps: {
-                    where: {
-                        userId
-                    },
-                    select:{
-                        id: true
-                    }
-                },
-                bookmark: {
-                    where: {
-                        userId
-                    },
-                    select: {
-                        id: true
-                    }
+                        user:{
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true,
+                            }
+                        },
+                        _count:{
+                            select:{
+                                claps: true
+                            }
+                        },
+                        claps: {
+                            where: {
+                                userId
+                            },
+                            select:{
+                                id: true
+                            }
+                        },
+                        bookmark: {
+                            where: {
+                                userId
+                            },
+                            select: {
+                                id: true
+                            }
 
-                }
-            }
+                        }
+                    }
                 }
             }
         })
 
         // we need to get the blogs from the bookmark
         const blogs = bookmarks
-        .filter(bookmark => bookmark.blog === null)
+        .filter(bookmark => bookmark.blog !== null)
         .map(bookmark => bookmark.blog)
 
         const totalBookmarks = await db.bookmark.count({where: {userId}})

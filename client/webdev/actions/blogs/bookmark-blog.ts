@@ -5,7 +5,7 @@ import { getUserById } from "@/lib/user"
 
 
 export const BookmarkBlog = async (blogId: string, userId: string) =>{
-    const blog = await db.bookmark.findUnique({
+    const blog = await db.blog.findUnique({
         where: {id: blogId}
     })
 
@@ -17,14 +17,14 @@ export const BookmarkBlog = async (blogId: string, userId: string) =>{
 
     // lets find if we have an existing clap or likes
 
-    const bookmark = await db.clap.findUnique({
+    const bookmark = await db.bookmark.findUnique({
         where: {
             userId_blogId: {userId, blogId}
         }
     })
 
     if(bookmark){
-        await db.clap.delete({
+        await db.bookmark.delete({
             where:{id: bookmark.id}
         })
         return {success: "Bookmark removed"}
