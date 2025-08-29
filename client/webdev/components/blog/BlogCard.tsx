@@ -37,6 +37,7 @@ const BlogCard = ({blog, isUserProfile}: {blog: BlogWithUser, isUserProfile?: bo
                 fill 
                 alt={blog.title} 
                 className='object-cover rounded-md'
+                loading='lazy'
                 />
         </Link>
         }
