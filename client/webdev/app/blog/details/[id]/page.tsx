@@ -10,6 +10,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import './editor.css'
+import Comments from '@/components/comments/Comments'
 
 
 interface BlogContentProps {
@@ -48,6 +49,9 @@ const BlogContent = async ({params}: BlogContentProps) => {
         <div>
             <BlockNoteEditor editable={false} initialContent={blog.content}/>
         </div>
+        <Separator />
+        <Comments blog={blog}/>
+
     </div>
   )
 }

@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import {Toaster} from 'react-hot-toast'
 
 
 const poppins = Poppins({
@@ -36,6 +37,15 @@ export default async function RootLayout({
       <body
         className={cn('antialiased flex flex-col min-h-screen px-2', poppins.variable)}
       > 
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          style: {
+            background: "rgb(51 65 85)",
+            color: "#fff"
+          }
+        }}
+      />
       
         <Navbar />
         <main className="flex-grow">
