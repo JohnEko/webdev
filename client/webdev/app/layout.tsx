@@ -57,6 +57,6 @@ export default async function RootLayout({
       </body>
     </html>
   </SessionProvider>
-  </EdgeStoreProvider>
+  </EdgeStoreProvider> 
   );
 }
