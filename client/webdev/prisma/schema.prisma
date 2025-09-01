@@ -19,9 +19,11 @@ model User {
   accounts      Account[]
   blogs         Blog[]
   claps         Clap[]
+  commentClaps  CommentClap[]
   bookmark      Bookmark[]
   comment          Comment[]
   repliedToComments Comment[] @relation("ReplyToUser")
+ 
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -120,6 +122,7 @@ model Comment {
   repliedToUserId String?
   content String
   createdAt DateTime @default(now())
+  claps CommentClap[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
@@ -128,4 +131,16 @@ model Comment {
   repliedToUser User? @relation("ReplyToUser", fields: [repliedToUserId], references: [id])
 
 
+}
+
+model CommentClap {
+  id String @id @default(cuid())
+  userId String
+  commentId String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
 }

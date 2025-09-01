@@ -15,6 +15,9 @@ import Alert from "../common/Alert"
 import { createBlog } from "@/actions/blogs/create-blog"
 import { Blog } from "@prisma/client"
 import { editBlog } from "@/actions/blogs/edit-blog"
+import { useEdgeStore } from "@/lib/edgestore"
+import { deleteBlog } from "@/actions/blogs/delete-blog"
+import { useRouter } from "next/navigation"
 
 //uploading images to edgestore
 //passing the blog optional incase we want to edit our post blog
@@ -28,6 +31,10 @@ const CreateBlogForm = ({blog}: {blog?: Blog}) => {
   const [success, setSuccess] = useState<string | undefined>('')
   const [isPublishing, startPublishing] = useTransition()
   const [isSavingAsDraft, startSavingAsDraft] = useTransition()
+  const [isDeleting, startDeleting] = useTransition()
+  const {edgestore} = useEdgeStore()
+  const router = useRouter()
+
 
 
   console.log(uploadedCover)
@@ -118,6 +125,38 @@ const CreateBlogForm = ({blog}: {blog?: Blog}) => {
     })
 
   }
+
+
+  // below the delete functions for the blog
+  const onDelete:SubmitHandler<BlogSchemaType> = (data) => {
+    console.log(data)
+    setSuccess('')
+    setError('')
+
+    //checking if deleted
+    startDeleting( async () => {
+      if(data.coverImage){
+        console.log('img', data.coverImage)
+        await edgestore.publicFiles.delete({
+          url: data.coverImage
+        })
+      }
+      
+      if(blog) {
+        deleteBlog(blog.id).then(res => {
+          if(res.error) {setError(res.error)}
+          if(res.success) {setError(res.success)}
+        })
+
+        router.push('/blog/feed/1')
+      }
+        
+      }
+     
+    )
+
+  }
+
 
   const onSaveDraft:SubmitHandler<BlogSchemaType> = (data) => {
     console.log(data)
@@ -213,10 +252,13 @@ const CreateBlogForm = ({blog}: {blog?: Blog}) => {
             {error && <Alert message={error} error/>} 
 
         <div className="flex item-center justify-between gap-6">
+          {/* check if blog is in edit mode before deleting */}
+          {blog && 
           <div>
-            <Button type="button" label="Delete"/>
-          </div>
+            <Button onClick={handleSubmit(onDelete)} type="button" label={isDeleting ? "Deleting" : "Delete"} />
+          </div>}
 
+            {/* for publishing and submiting blog */}
           <div className="flex gap-4">
             <Button type="submit" label={isPublishing ? "Publishing" : "Publish"} className="bg-blue-700"/>
             <Button type="button" label={isSavingAsDraft ? "Saving..." : "Save as Draft"} 

@@ -1,13 +1,12 @@
 'use server'
 
 import { db } from "@/lib/db"
-import { getBlogById } from "../blogs/getblogbyids"
-import { success } from "zod"
+
 
 export const getComments = async(blogId: string, parentId: string | null, userId?: string) => {
-    const blog = await getBlogById({blogId})
+    const blog = await db.blog.findUnique({where: {id: blogId}})
 
-    if(!blog) return {error: "Blog not found"}
+    if(!blog) return { error: "Blog not found"}
 
     try {
         const comments = await db.comment.findMany({
@@ -29,7 +28,13 @@ export const getComments = async(blogId: string, parentId: string | null, userId
                 _count: {
                     select: {
                         replies: true,
-                        //claps: true
+                        claps: true
+                    }
+                },
+                claps: {
+                    where:{userId},
+                    select:{
+                        id: true
                     }
                 }
 
