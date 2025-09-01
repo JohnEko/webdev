@@ -4,12 +4,12 @@ import { db } from "@/lib/db"
 import { getUserById } from "@/lib/user"
 
 
-export const clapBlog = async (blogId: string, userId: string) =>{
-    const blog = await db.blog.findUnique({
-        where: {id: blogId}
+export const clapComment = async (commentId: string, userId: string) =>{
+    const comment = await db.comment.findUnique({
+        where: {id: commentId}
     })
 
-    if(!blog) return {error: "Blog not found"}
+    if(!comment) return {error: "Comment not found"}
 
     const user = await getUserById(userId)
 
@@ -17,20 +17,20 @@ export const clapBlog = async (blogId: string, userId: string) =>{
 
     // lets find if we have an existing clap or likes
 
-    const clap = await db.clap.findUnique({
+    const clap = await db.commentClap.findUnique({
         where: {
-            userId_blogId: {userId, blogId}
+            userId_commentId: {userId, commentId}
         }
     })
 
     if(clap){
-        await db.clap.delete({
+        await db.commentClap.delete({
             where:{id: clap.id}
         })
         return {success: "Unclapped"}
     }else{
-        await db.clap.create({
-            data: {userId, blogId}
+        await db.commentClap.create({
+            data: {userId, commentId}
         })
         return {success: "clap"}
     }

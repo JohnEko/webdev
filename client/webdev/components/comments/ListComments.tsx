@@ -9,7 +9,11 @@ export type CommentWithUser = Comment & {
     repliedToUser: Pick<User, 'id' | 'name'> | null
     _count: {
             replies: number
+            claps: number
     }
+    claps: {
+      id: string
+    }[]
 }
 
 const ListComments = ({comments}: {comments: CommentWithUser[]}) => {

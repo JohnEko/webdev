@@ -37,7 +37,8 @@ export const getBookmarks = async ({page =1,  limit=5}:{
                         },
                         _count:{
                             select:{
-                                claps: true
+                                claps: true,
+                                comment: true
                             }
                         },
                         claps: {

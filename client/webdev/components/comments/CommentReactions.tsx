@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { CommentWithUser } from './ListComments'
 import { FaHandsClapping } from 'react-icons/fa6'
 import { FaRegComment } from 'react-icons/fa'
@@ -10,6 +10,8 @@ import { MdDeleteOutline } from 'react-icons/md'
 import { useSession } from 'next-auth/react'
 import { deleteComment } from '@/actions/comments/delete-comment'
 import toast from 'react-hot-toast'
+import { PiHandsClapping } from 'react-icons/pi'
+import { clapComment } from '@/actions/comments/clap-comments'
 
 interface CommentReactionProps {
     comment: CommentWithUser
@@ -22,6 +24,8 @@ interface CommentReactionProps {
 const CommentReactions = ({comment, setShowForm, setShowReplies, isReply}: CommentReactionProps) => {
     const session = useSession()
     const userId = session.data?.user.userId
+    const [clapCount, setClapCount] = useState(comment._count.claps)
+    const [userHasClapped, setUserHasClapped] = useState(!!comment.claps.length)
 
     const handleReply = () => {
         setShowForm(prev => !prev)
@@ -36,24 +40,41 @@ const CommentReactions = ({comment, setShowForm, setShowReplies, isReply}: Comme
 
     const handleDelete = async () => {
         if(userId){
-            const res = await deleteComment(comment.id, userId)
+            const res = await deleteComment(comment.id)
 
             if (res.success){
                 toast(res.success)
             }
         }
-
     }
+
+    const handleClap = async () => {
+            if(!userId) return
+    
+            setClapCount((prevCount) => userHasClapped ? prevCount -1 : prevCount + 1)
+            //if user has clap in a post it stays but if not you cant clap twise
+            setUserHasClapped(preState => !preState)
+    
+            //lets save it in our database
+            await clapComment(comment.id, userId)
+           
+    
+        }
+
+
  
     return (
     <div className={cn('flex justify-between items-center w-full text-sm mt-2 gap-4', isReply && "justify-start ml-2")}>
         <div className='flex items-center gap-4'>
-            <span className='flex items-center gap-1 cursor-pointer'>
-                <FaHandsClapping size={20}/> {4}
+            {/* check if user has clapped a comment fahandsclapping*/}
+            <span onClick={handleClap} className='flex items-center gap-1 cursor-pointer'>
+               {userHasClapped ?  <FaHandsClapping size={20}/> : <PiHandsClapping size={20}/>} {clapCount}
             </span>
+            for replying comments
             {!isReply && <span onClick={handleShowReplies} className='flex items-center gap-1 cursor-pointer'>
                 <FaRegComment size={20}/>Replies {comment._count.replies}</span>}
         </div>
+
         <div className='flex items-center'>
             <span onClick={handleReply} className='flex items-center gap-1 cursor-pointer mr-4'>
                 <BsReply size={20}/>Reply
