@@ -34,7 +34,7 @@ const UserButton = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem>
-            <button className="flex items-center gap-2">
+            <button onClick={() => router.push(`/user/${session.data?.user.userId}/1`)} className="flex items-center gap-2">
               <User size={18} />
               Profile
             </button>
