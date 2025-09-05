@@ -1,12 +1,21 @@
 
-
 import { User } from '@prisma/client'
-import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Calendar, UserRound } from 'lucide-react'
 import moment from 'moment'
+import { getBlogsByUserId } from '@/actions/blogs/get-blogs-by-userid'
+import Alert from '../common/Alert'
+import ListBlog from '../blog/ListBlog'
 
-const UserProfile = ({user, page}: {user: User, page: string}) => {
+const UserProfile = async ({user, page}: {user: User, page: string}) => {
+
+    const currentPage = parseInt(page, 10) || 1
+    const { success, error } = await getBlogsByUserId({
+        page: currentPage, limit: 5, userId: user.id
+    })
+
+
+
   return (
     <div className='max-w-[1200px] m-auto p-4'>
         {/* this is the top user image  and edith button*/}
@@ -49,7 +58,15 @@ const UserProfile = ({user, page}: {user: User, page: string}) => {
 
             <div className='flex justify-center items-center gap-2'>
                 <Calendar size={18}/> Member Since {moment(user.createdAt).format('MMMM DD YYYY')}
+            </div>
 
+            <div>
+                Tags
+            </div>
+
+            <div>
+                {error && <Alert error message="Error fetching user blogs"/>}
+                {success && <ListBlog blog={success.blog} hasMore={success.hasMore} currentPage={currentPage} isUserProfile={true}/>}
             </div>
 
         </div>

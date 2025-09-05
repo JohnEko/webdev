@@ -33,7 +33,7 @@ const ListBlog = ({blog, hasMore, currentPage, isUserProfile}: ListBlogProps) =>
             {blog.map((blog) => <BlogCard key={blog.id} blog={blog} isUserProfile={isUserProfile}/> )}
         </section>
 {/* Pagination of the page to the next page */}
-        <Pagination currentPage={currentPage} hasMore={hasMore}/>
+        <Pagination currentPage={currentPage} hasMore={hasMore} isUserProfile={isUserProfile}/>
 
     </div>
   )

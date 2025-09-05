@@ -5,14 +5,23 @@ import Image from 'next/image'
 import UserSummary from './UserSummary'
 import Tags from '../common/Tags'
 import Reactions from './Reactions'
+import { auth } from '@/auth'
 
 
-const BlogCard = ({blog, isUserProfile}: {blog: BlogWithUser, isUserProfile?: boolean}) => {
-  return (
+const BlogCard = async ({blog, isUserProfile}: {blog: BlogWithUser, isUserProfile?: boolean}) => {
+   const session = await auth()
+   const userId = session?.user.userId
+   const isOwner = userId === blog.userId
+   const isAdmin = session?.user.role === 'ADMIN'
+  
+    return (
     <div className='border-b border-slate-300 dark:border-slate-700 py-6 cursor-pointer'>
 
-        <div>
+        <div className='flex items-center justify-between'>
            {blog.user && <UserSummary user={blog.user} createdDate={blog.createdAt} />}
+           {isOwner && isUserProfile && !blog.isPublished && <p className='text-rose-500'>Draft</p>}
+           {(isOwner || isAdmin) && isUserProfile && <Link className='text-orange-400' href={`/blog/edit/${blog.id}`}>Edit</Link>}
+          
         </div>
         <div className='my-2 flex justify-between gap-6'>
             <div className='flex flex-col justify-between w-full'>
