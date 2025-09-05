@@ -1,12 +1,23 @@
 
-
 import { User } from '@prisma/client'
-import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Calendar, UserRound } from 'lucide-react'
 import moment from 'moment'
+import { getBlogsByUserId } from '@/actions/blogs/get-blogs-by-userid'
+import Tags from '../common/Tags'
+import Alert from '../common/Alert'
+import ListBlog from '../blog/ListBlog'
+import EditProfileButton from './EditProfileButton'
 
-const UserProfile = ({user, page}: {user: User, page: string}) => {
+const UserProfile = async ({user, page}: {user: User, page: string}) => {
+
+    const currentPage = parseInt(page, 10) || 1
+    const { success, error } = await getBlogsByUserId({
+        page: currentPage, limit: 5, userId: user.id
+    })
+
+
+
   return (
     <div className='max-w-[1200px] m-auto p-4'>
         {/* this is the top user image  and edith button*/}
@@ -33,7 +44,7 @@ const UserProfile = ({user, page}: {user: User, page: string}) => {
             </div>
                 
             <div>
-                <p>Edith</p>
+                <EditProfileButton user={user}/>
             </div>
 
         </div>
@@ -49,7 +60,20 @@ const UserProfile = ({user, page}: {user: User, page: string}) => {
 
             <div className='flex justify-center items-center gap-2'>
                 <Calendar size={18}/> Member Since {moment(user.createdAt).format('MMMM DD YYYY')}
+            </div>
 
+            <div>
+                {/* creating a Tag for use */}
+                {!!user.tags.length && <div className='flex items-center justify-center p-6 border-b 
+                mb-6 gap-4 flex-wrap'>
+                    {user.tags.map(tag => <Tags key={tag}>{tag}</Tags>)}
+                
+                </div>}
+            </div>
+
+            <div>
+                {error && <Alert error message="Error fetching user blogs"/>}
+                {success && <ListBlog blog={success.blog} hasMore={success.hasMore} currentPage={currentPage} isUserProfile={true}/>}
             </div>
 
         </div>
