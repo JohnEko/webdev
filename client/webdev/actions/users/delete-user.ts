@@ -3,13 +3,12 @@
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
 import { backendClient } from "@/lib/edgestore-server"
-import { getUserByEmail } from "@/lib/user"
-import { error } from "console"
-import { success } from "zod"
+import { getUserById } from "@/lib/user"
+
 
 export const deleteUser = async (userId: string) => {
 
-    const user = await getUserByEmail(userId)
+    const user = await getUserById(userId)
     if(!user) return {error: "user not found"}
     const session = await auth()
     
