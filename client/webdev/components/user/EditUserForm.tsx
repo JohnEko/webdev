@@ -11,6 +11,10 @@ import { EditProfileSchema, EditProfileSchemaType } from '@/schemas/EditProfileS
 import { editUser } from '@/actions/users/edit-user'
 import { tags } from '@/lib/tags'
 import { User } from '@prisma/client'
+import UserButton from '../layout/UserButton'
+import { Delete } from 'lucide-react'
+import { deleteUser } from '@/actions/users/delete-user'
+import { signOut } from 'next-auth/react'
 
 const EditUserForm = ({user, isCredentials}: {user: User, isCredentials: boolean}) => {
 
@@ -46,6 +50,22 @@ const EditUserForm = ({user, isCredentials}: {user: User, isCredentials: boolean
               })
             } 
           })
+      }
+
+      const onDelete = () => {
+        setDeleteSuccess('')
+        setDeleteError('')
+        startDeleting(() => {
+          deleteUser(user.id).then(res => {
+            setDeleteError(res.error)
+            setDeleteSuccess(res.success)
+            if(res.success){
+              setTimeout(() => {
+                signOut()
+              }, 5000)
+            }
+          })
+        })
       }
     
 
@@ -114,6 +134,9 @@ const EditUserForm = ({user, isCredentials}: {user: User, isCredentials: boolean
       </div>
       {deleteError && <Alert message={deleteError} error/>}
       {deleteSuccess && <Alert message={deleteSuccess} success/>}
+      <Button label={isDeleting ? "Deleting..." : "Delete Account"} outlined type='button'
+      className='mt-4' onClick={() => onDelete()} 
+      />
     </div>
     </>
   )
