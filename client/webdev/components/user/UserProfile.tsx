@@ -4,8 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Calendar, UserRound } from 'lucide-react'
 import moment from 'moment'
 import { getBlogsByUserId } from '@/actions/blogs/get-blogs-by-userid'
+import Tags from '../common/Tags'
 import Alert from '../common/Alert'
 import ListBlog from '../blog/ListBlog'
+import EditProfileButton from './EditProfileButton'
 
 const UserProfile = async ({user, page}: {user: User, page: string}) => {
 
@@ -42,7 +44,7 @@ const UserProfile = async ({user, page}: {user: User, page: string}) => {
             </div>
                 
             <div>
-                <p>Edith</p>
+                <EditProfileButton user={user}/>
             </div>
 
         </div>
@@ -61,7 +63,12 @@ const UserProfile = async ({user, page}: {user: User, page: string}) => {
             </div>
 
             <div>
-                Tags
+                {/* creating a Tag for use */}
+                {!!user.tags.length && <div className='flex items-center justify-center p-6 border-b 
+                mb-6 gap-4 flex-wrap'>
+                    {user.tags.map(tag => <Tags key={tag}>{tag}</Tags>)}
+                
+                </div>}
             </div>
 
             <div>

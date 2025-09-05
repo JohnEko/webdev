@@ -1,7 +1,8 @@
-'user server'
+'use server'
 
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
+import { generateEmailVerificationToken, sendEmailVerificationToken } from "@/lib/emailVerification"
 import { getUserByEmail, getUserById } from "@/lib/user"
 import { EditProfileSchema, EditProfileSchemaType } from "@/schemas/EditProfileSchema"
 import { success } from "zod"
@@ -13,11 +14,40 @@ export const editUser = async (values: EditProfileSchemaType, userId: string) =>
 
     const session = await auth()
 
-    if(session?.user.userId !== userId) return {error: 'Not authorized user'}
+    if(session?.user.userId != userId) return {error: 'Not authorized user'}
 
     const user = await getUserById(userId)
 
     if(!user) return {error: 'User dose not exist'}
+
+    if(user.email != vFields.data.email) {
+        const existingUser = await getUserByEmail(vFields.data.email)
+        if(existingUser) {
+            return {error: 'Email already in use'}
+        }
+        await db.user.update({
+        where: {id: userId},
+        data: {
+            ...vFields.data,
+            emailVerified: null
+        }
+    })
+
+    const verificationToken = await generateEmailVerificationToken(
+        vFields.data.email
+    )
+
+    const {error} = await sendEmailVerificationToken(
+        verificationToken.email,
+        verificationToken.token
+    )
+
+    if(error) {
+        return {error: "Something went wrong while sending verification email! Try to login to resend the verification email"}
+        }
+    
+    return {success: "Verification email sent"}
+    }else {
 
     await db.user.update({
         where: {id: userId},
@@ -27,5 +57,6 @@ export const editUser = async (values: EditProfileSchemaType, userId: string) =>
     })
 
     return {success: "User profile updated"}
+    }
 
 }
