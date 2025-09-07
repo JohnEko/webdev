@@ -1,8 +1,6 @@
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
-import { error } from "console"
-import { NextResponse, userAgent } from "next/server"
-import { success } from "zod"
+import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
     try {

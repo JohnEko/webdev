@@ -1,17 +1,45 @@
 
 import { User } from '@prisma/client'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Calendar, UserRound } from 'lucide-react'
+import { Calendar, SquaresSubtractIcon, UserRound } from 'lucide-react'
 import moment from 'moment'
 import { getBlogsByUserId } from '@/actions/blogs/get-blogs-by-userid'
 import Tags from '../common/Tags'
 import Alert from '../common/Alert'
 import ListBlog from '../blog/ListBlog'
 import EditProfileButton from './EditProfileButton'
+import FollowButton from './FollowButton'
+import { auth } from '@/auth'
 
-const UserProfile = async ({user, page}: {user: User, page: string}) => {
+export type UserWithFollows = User & {
+    followers: {
+        follower: Pick<User, 'id' | 'name' | 'image'> & {
+            followers: {
+                id: string
+            }[]
+        }
+    }[];
+
+    followings: {
+        following: Pick<User, 'id' | 'name' | 'image'> & {
+            followers: {
+                id: string
+            }[]
+        }
+    }[];
+
+    _count: {
+        followers: number
+        following: number
+    }
+}
+
+const UserProfile = async ({user, page, isFollowing}: {user: UserWithFollows, page: string, isFollowing: boolean}) => {
 
     const currentPage = parseInt(page, 10) || 1
+    const session  = await auth()
+    const userId = session?.user.userId
+
     const { success, error } = await getBlogsByUserId({
         page: currentPage, limit: 5, userId: user.id
     })
@@ -44,7 +72,10 @@ const UserProfile = async ({user, page}: {user: User, page: string}) => {
             </div>
                 
             <div>
-                <EditProfileButton user={user}/>
+                {/* if we are not the owner of the profile we hide it and show follow button */}
+                {userId == user.id && <EditProfileButton user={user}/>}
+                {userId != user.id && <FollowButton user={user} isFollowing={isFollowing} isList/>}
+                
             </div>
 
         </div>
