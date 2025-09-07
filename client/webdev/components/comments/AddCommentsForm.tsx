@@ -33,9 +33,6 @@ const AddCommentsForm = ({blogId, userId, parentId, repliedToId, placeholder, cr
            .then(async (res) =>{
                 if(res.error) return toast.error(res.error)
                 if(res.success){
-                    toast.success(res.success)
-                    reset()
-
                     if(repliedToId){
                         await createNotification({
                             recipientId: repliedToId,
@@ -58,6 +55,9 @@ const AddCommentsForm = ({blogId, userId, parentId, repliedToId, placeholder, cr
                     })
 
                 }    //send notification realtime using socketio
+
+                 toast.success(res.success)
+                    reset()
             }
            })
         })
