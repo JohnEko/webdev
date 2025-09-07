@@ -7,7 +7,7 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
-const FollowButton = ({user, isFollowing: following, isList =false} : {user: User, isFollowing: boolean, isList: boolean}) => {
+const FollowButton = ({user, isFollowing: following, isList =false} : {user: User | Pick<User, 'id' | 'name' | 'image'>, isFollowing: boolean, isList: boolean}) => {
     const [isFollowing, setIsFollowing] = useState(following) 
     const [loading, setLoading] = useState(false)
     const router = useRouter()
@@ -33,7 +33,7 @@ const FollowButton = ({user, isFollowing: following, isList =false} : {user: Use
             router.refresh()
 
         } catch (error: any) {
-            toast.error('Something went wrong!')
+            toast.error(error.response.data.error)
         }finally{setLoading(false)}
 
     }

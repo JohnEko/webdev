@@ -10,6 +10,8 @@ import ListBlog from '../blog/ListBlog'
 import EditProfileButton from './EditProfileButton'
 import FollowButton from './FollowButton'
 import { auth } from '@/auth'
+import FollowerList from './FollowerList'
+import FollowingList from './FollowingList'
 
 export type UserWithFollows = User & {
     followers: {
@@ -28,9 +30,9 @@ export type UserWithFollows = User & {
         }
     }[];
 
-    _count: {
+    _count: {        
         followers: number
-        following: number
+        followings: number
     }
 }
 
@@ -63,8 +65,8 @@ const UserProfile = async ({user, page, isFollowing}: {user: UserWithFollows, pa
                     <h1 className='text-xl sm:text-3xl font-bold'>{user.name}</h1>
                     {user.bio && <p>{user.bio}</p>}
                     <div className='flex items-center gap-4'>
-                        <span>followers</span>
-                        <span>following</span>
+                        <FollowerList user={user}/>
+                        <FollowingList user={user}/>
 
                     </div>
                 </div>
