@@ -6,6 +6,7 @@ import { User } from '@prisma/client'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { createNotification } from '@/actions/notifications/createNotification'
 
 const FollowButton = ({user, isFollowing: following, isList =false} : {user: User | Pick<User, 'id' | 'name' | 'image'>, isFollowing: boolean, isList: boolean}) => {
     const [isFollowing, setIsFollowing] = useState(following) 
@@ -21,10 +22,13 @@ const FollowButton = ({user, isFollowing: following, isList =false} : {user: Use
         try {
             setLoading(true)
 
-            const res = await axios.post(`/api/follow/${user.id}/`)
+            const res = await axios.post('/api/follow', {followId: user.id})
             if(res.data.success == 'followed'){
                 setIsFollowing(true)
                 //after following send notification
+                if(user.id){
+                    await createNotification({recipientId: user.id, type: 'FOLLOW', entityType: "USER"})
+                }
 
             } else if(res.data.success == 'unfollowed'){
                 setIsFollowing(false)
