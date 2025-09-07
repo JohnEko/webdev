@@ -9,7 +9,7 @@ export async function POST(req: Request) {
         const userId = session?.user.userId //followed the other
         const followId = body.followeId //person we followed
 
-        if(!userId) return new NextResponse("Unauthorized", {status: 401})
+        if(!userId) return NextResponse.json({error: "Unauthorized"}, {status: 401})
         
         if(!followId)
             return NextResponse.json(
