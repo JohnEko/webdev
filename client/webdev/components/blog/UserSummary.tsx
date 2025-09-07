@@ -16,11 +16,15 @@ const UserSummary = ({user, createdDate}: UserSummaryProps) => {
   return (
     <Link href={`/user/${user.id}/1`} className="flex gap-2 items-center">
         <Avatar>
-            <AvatarImage src={user?.image || ''}>
+            <AvatarImage src={user?.image || ""} />
+            <AvatarFallback className="border-2 border-slate-500 dark:border-slate-50">
+                <UserRound />
+            </AvatarFallback>
+            {/* <AvatarImage src={user?.image || ""}>
                 <AvatarFallback className="border-2 border-slate-500 dark:border-slate-50">
                     <UserRound />
                 </AvatarFallback>
-            </AvatarImage>
+            </AvatarImage> */}
         </Avatar>
 
         <div className="flex items-center gap-2 text-sm">

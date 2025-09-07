@@ -8,6 +8,7 @@ import Button from '../common/Button'
 import TexteraField from '../common/TexAreaField'
 import { addComments } from '@/actions/comments/add-comments'
 import { toast } from 'react-hot-toast'
+import { createNotification } from '@/actions/notifications/createNotification'
 
 interface IAddCommentsProps{
     blogId: string
@@ -28,11 +29,35 @@ const AddCommentsForm = ({blogId, userId, parentId, repliedToId, placeholder, cr
     const onSubmit: SubmitHandler<CommentSchemaType> = (data) =>{
         // calling our server action
         startTransition(() => {
-           addComments({values:data, userId, blogId, parentId, repliedToUserId: repliedToId}).then((res) =>{
-            if(res.error) return toast.error(res.error)
-            if(res.success){
-                toast.success(res.success)
-                reset()
+           addComments({values:data, userId, blogId, parentId, repliedToUserId: repliedToId})
+           .then(async (res) =>{
+                if(res.error) return toast.error(res.error)
+                if(res.success){
+                    toast.success(res.success)
+                    reset()
+
+                    if(repliedToId){
+                        await createNotification({
+                            recipientId: repliedToId,
+                            type: "COMMENT_REPLY",
+                            commentId: parentId,
+                            entityType: "COMMENT",
+                            content: data.content
+                    })
+
+                    //send notification realtime using socketio
+                }
+
+                 if(creatorId){
+                        await createNotification({
+                            recipientId: creatorId,
+                            type: "NEW_COMMENT",
+                            blogId,
+                            entityType: "BLOG",
+                            content: data.content
+                    })
+
+                }    //send notification realtime using socketio
             }
            })
         })

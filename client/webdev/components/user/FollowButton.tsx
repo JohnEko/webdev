@@ -21,7 +21,7 @@ const FollowButton = ({user, isFollowing: following, isList =false} : {user: Use
         try {
             setLoading(true)
 
-            const res = await axios.post(`/api/follow/${user.id}`)
+            const res = await axios.post(`/api/follow/${user.id}/`)
             if(res.data.success == 'followed'){
                 setIsFollowing(true)
                 //after following send notification
