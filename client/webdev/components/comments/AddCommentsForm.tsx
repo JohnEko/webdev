@@ -32,6 +32,7 @@ const AddCommentsForm = ({blogId, userId, parentId, repliedToId, placeholder, cr
            addComments({values:data, userId, blogId, parentId, repliedToUserId: repliedToId})
            .then(async (res) =>{
                 if(res.error) return toast.error(res.error)
+                    
                 if(res.success){
                     if(repliedToId){
                         await createNotification({

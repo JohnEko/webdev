@@ -21,7 +21,7 @@ model User {
   accounts      Account[]
   blogs         Blog[]
   claps         Clap[]
-  followers     Follow[] @relation("UserAsFollowed") //those who follow the user
+  followers     Follow[] @relation("UserAsFollowed") //those who follow this user
   followings     Follow[] @relation("UserAsFollower") //those followed by this user
   commentClaps  CommentClap[]
   bookmark      Bookmark[]
@@ -105,7 +105,7 @@ model Blog{
   claps Clap[]
   bookmark Bookmark[]
   comment  Comment[]
-  notification  Notification[]
+  notifications  Notification[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -171,10 +171,10 @@ model Notification {
   recipientId String
   senderId String
   type NotificationType
-  blogId String
-  commentId  String
+  blogId String?
+  commentId  String?
   entityType EntityType?
-  content String
+  content String?
   isRead Boolean @default(false)
   createdAt DateTime @default(now())
 

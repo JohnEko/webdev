@@ -58,8 +58,8 @@ const Profile = async ({params}: {params: Promise<{id: string, page: string}>}) 
 
     const follow = await db.follow.findFirst({
       where: {
-        followingId: user.id,
-        followerId: userId
+        followerId: userId,
+        followingId: user.id
       }
     })
   return (

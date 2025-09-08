@@ -75,8 +75,8 @@ const UserProfile = async ({user, page, isFollowing}: {user: UserWithFollows, pa
                 
             <div>
                 {/* if we are not the owner of the profile we hide it and show follow button */}
-                {userId == user.id && <EditProfileButton user={user}/>}
-                {userId != user.id && <FollowButton user={user} isFollowing={isFollowing} isList/>}
+                {userId === user.id && <EditProfileButton user={user}/>}
+                {userId !== user.id && <FollowButton user={user} isFollowing={isFollowing} isList/>}
                 
             </div>
 
