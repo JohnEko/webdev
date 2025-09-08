@@ -10,8 +10,8 @@ export const createNotification = async ({
     type,
     blogId,
     commentId,
-    content,
     entityType,
+    content
    
 }: {
     recipientId: string
@@ -28,7 +28,7 @@ export const createNotification = async ({
         return {error: "Not authenticated"}
     }
 
-    if(session.user.userId == recipientId){
+    if(session.user.userId === recipientId){
         return {error: "Failed to send Notification to self"}
     }
 
@@ -41,16 +41,16 @@ export const createNotification = async ({
     }
 
     try {
-        
+
         await db.notification.create({
         data: {
             senderId: session.user.userId,
             recipientId,
             type,
-            blogId: blogId ?? '',
-            commentId: commentId ?? '',
+            blogId,
+            commentId,
             entityType,
-            content: content ?? ''
+            content
 
         },
     })
