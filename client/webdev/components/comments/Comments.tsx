@@ -21,7 +21,18 @@ const Comments = async ({blog}: {blog: BlogWithUser}) => {
     {/* add comments form, this can be below  */}
     {userId && <AddCommentsForm blogId={blog.id} userId={userId} creatorId={blog.userId} />}
     {/* list of comments */}
-    {!!success?.comments.length && <ListComments comments={success.comments}/>}
+    {!!success?.comments.length && (
+      <ListComments
+        comments={success.comments.map((comment: any) => ({
+          ...comment,
+          user: {
+            id: comment.user.id,
+            name: comment.user.name,
+            image: comment.user.image,
+          },
+        }))}
+      />
+    )}
    
     </div>
   )

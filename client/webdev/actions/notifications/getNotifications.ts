@@ -1,8 +1,11 @@
+'use server'
+
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { success, unknown } from "zod";
 
-export const getNotificantions = async () => {
+
+export const getNotifications = async () => {
   const session = await auth();
 
   if (!session?.user) {
@@ -12,7 +15,7 @@ export const getNotificantions = async () => {
   const userId = session?.user.userId;
 
   try {
-    const notification = await db.notification.findMany({
+    const notifications = await db.notification.findMany({
       where: { recipientId: userId },
       include: {
         sender: {
@@ -61,7 +64,7 @@ export const getNotificantions = async () => {
       where: { recipientId: userId, isRead: false },
     });
 
-    const formattedNotification = notification.map((n) => {
+    const formattedNotification = notifications.map(n => {
       let content = "";
 
       switch (n.type) {
@@ -102,7 +105,7 @@ export const getNotificantions = async () => {
 
     return {
       success: {
-        notification: formattedNotification,
+        notifications: formattedNotification,
         unreadNotificationCount: unreadCount,
       },
     };

@@ -41,7 +41,6 @@ export const createNotification = async ({
     }
 
     try {
-
         await db.notification.create({
         data: {
             senderId: session.user.userId,
