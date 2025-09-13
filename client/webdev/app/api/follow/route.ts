@@ -7,15 +7,16 @@ export async function POST(req: Request) {
         const body = await req.json()
         const session = await auth()
         const userId = session?.user.userId //followed the other
-        const followId = body.followeId //person we followed
+        const followId = body.followId //person we followed
 
         if(!userId) return NextResponse.json({error: "Unauthorized"}, {status: 401})
         
-        if(!followId)
+        if(!followId){
             return NextResponse.json(
-        {error: "No user to follow ID"},
-        {status: 400}
-        )
+            {error: "No user to follow ID"},
+            {status: 400}
+            )
+        }
 
         if (userId === followId) {
             return NextResponse.json(
