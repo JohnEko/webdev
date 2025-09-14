@@ -2,10 +2,12 @@
   "name": "webdev",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "node server.js",
+    "nodemon": "nodemon server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -37,6 +39,8 @@
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
     "resend": "^4.0.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.6.0",
     "uuid": "^11.1.0",
     "zod": "^4.0.14"

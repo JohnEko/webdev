@@ -99,9 +99,10 @@ const Notifications = () => {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger className="relative">
-          <div className="absolute bg-rose-500 h-6 w-6 rounded-full text-sm flext items-center justify-center bottom-2 left-2">
+          {/* if unread notification no red button */}
+          {unreadCount && <div className="absolute bg-rose-500 h-6 w-6 rounded-full text-sm flext items-center justify-center bottom-2 left-2">
             <span>{unreadCount}</span>
-          </div>
+          </div>}
           <Bell size={20} />
         </DropdownMenuTrigger>
 
