@@ -7,6 +7,8 @@ import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import {Toaster} from 'react-hot-toast'
+import { ThemeProvider } from "next-theme";
+import { SocketContextProvider } from "@/context/SocketContext";
 
 
 const poppins = Poppins({
@@ -33,6 +35,7 @@ export default async function RootLayout({
   return (
     <EdgeStoreProvider>
     <SessionProvider session={session}>
+      <SocketContextProvider>
     <html lang="en">
       <body
         className={cn('antialiased flex flex-col min-h-screen px-2', poppins.variable)}
@@ -46,16 +49,17 @@ export default async function RootLayout({
           }
         }}
       />
-      
+      {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange> */}
         <Navbar />
         <main className="flex-grow">
 
           {children}
         </main>
         <footer>Footer</footer>
-    
+      {/* </ThemeProvider> */}
       </body>
     </html>
+    </SocketContextProvider>
   </SessionProvider>
   </EdgeStoreProvider> 
   );
