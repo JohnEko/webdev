@@ -14,6 +14,7 @@ import { getNotifications } from "@/actions/notifications/getNotifications";
 import { cn } from "@/lib/utils";
 import moment from "moment";
 import { markAllNotificationAsRead, markNotificationAsRead } from "@/actions/notifications/markAsRead";
+import { useSocket } from "@/context/SocketContext";
 
 export type LatestNotification = Notification & {
     blog: Pick<Blog, "id" | "title"> | null;
@@ -28,6 +29,7 @@ const Notifications = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const {refetchNotification, handleRefetchNotification} = useSocket()
 
   console.log('>>>>>>', notifications)
 
@@ -54,7 +56,7 @@ const Notifications = () => {
       }
     };
     handleFetch();
-  }, []);
+  }, [refetchNotification]);
 
 
 //this help to smootly navigate to the comment section
@@ -88,11 +90,13 @@ const Notifications = () => {
     }
 //mark single notification as read
     await markNotificationAsRead(n.id)
+    handleRefetchNotification()
   }
 
   //mark all as read
   const markAllAsRead = async () => {
     await markAllNotificationAsRead()
+    handleRefetchNotification()
   }
 
   return (
@@ -100,7 +104,7 @@ const Notifications = () => {
       <DropdownMenu>
         <DropdownMenuTrigger className="relative">
           {/* if unread notification no red button */}
-          {unreadCount && <div className="absolute bg-rose-500 h-6 w-6 rounded-full text-sm flext items-center justify-center bottom-2 left-2">
+          {!!unreadCount && <div className="absolute bg-rose-500 h-6 w-6 rounded-full text-sm flext items-center justify-center bottom-2 left-2">
             <span>{unreadCount}</span>
           </div>}
           <Bell size={20} />

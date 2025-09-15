@@ -36,7 +36,7 @@ export default async function RootLayout({
     <EdgeStoreProvider>
     <SessionProvider session={session}>
       <SocketContextProvider>
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn('antialiased flex flex-col min-h-screen px-2', poppins.variable)}
       > 

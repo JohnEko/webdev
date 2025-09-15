@@ -1,12 +1,13 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import React, {createContext, use, useCallback, useContext, useEffect, useState} from 'react'
+import React, {createContext, useCallback, useContext, useEffect, useState} from 'react'
 import {io, Socket} from 'socket.io-client'
-import { string } from 'zod'
 
 interface iSocketContext {
-
+    refetchNotification: boolean
+    sendNotification: (recipientId: string) => void
+    handleRefetchNotification: () => void
 }
 //we rap our app with socket provider
 export const SocketContext = createContext<iSocketContext | null>(null) 
@@ -17,12 +18,18 @@ export const SocketContextProvider = ({ children }: {children: React.ReactNode})
     const user = session.data?.user
     const [socket, setSocket] = useState<Socket | null>()
     const [isSocketConnected, setIsSocketConnected] = useState(false)
+    const [refetchNotification, setRefetchNotification] = useState(true)
 
     const sendNotification = useCallback((recipientId: string) => {
         if(user && socket && isSocketConnected) {
             socket.emit('onNotification', recipientId)
         }
     }, [user, socket, isSocketConnected])
+
+    const handleRefetchNotification = () => {
+        setRefetchNotification(prev => !prev)
+    }
+
 
     useEffect(() => {
         const newSocket = io()
@@ -36,23 +43,31 @@ export const SocketContextProvider = ({ children }: {children: React.ReactNode})
     //listern for connection if socket changes useEffect trigger
     useEffect(() => {
 
-        if (!socket) return
+        if (socket == null) return
 
         function onConnect(){
             setIsSocketConnected(true)
-            console.log(">>>>> socket connecting")
+            console.log(">>>>> New socket connecting")
         }
 
         function onDisconnect(){
             setIsSocketConnected(false)
         }
 
+        function onNotification(){
+            handleRefetchNotification()
+
+        }
+
         socket.on('connect', onConnect)
         socket.on('disconnect', onDisconnect)
+        socket.on('getNotification', onNotification)
 
         return () => {
             socket.off('connect', onConnect)
             socket.off('disconnect', onDisconnect)
+            socket.off('getNotification', onNotification)
+
         }
 
     }, [socket])
@@ -65,7 +80,11 @@ export const SocketContextProvider = ({ children }: {children: React.ReactNode})
     }, [socket, isSocketConnected, user])
 
     
-    return <SocketContext.Provider value={{}}>
+    return <SocketContext.Provider value={{
+        refetchNotification,
+        sendNotification,
+        handleRefetchNotification
+    }}>
             {children}
         </SocketContext.Provider>
     }

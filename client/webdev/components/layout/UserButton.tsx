@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 const UserButton = () => {
 
   const session = useSession()
+  const isAdmin = session.data?.user.role == "ADMIN"
   const imageUrl = session.data?.user.image || ""
   const router = useRouter()
 
@@ -57,13 +58,15 @@ const UserButton = () => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
 
+          {isAdmin && <>
           <DropdownMenuItem>
-            <button className="flex items-center gap-2">
+            <button onClick={() => router.push('/admin')} className="flex items-center gap-2">
               <Shield size={18} />
               Admin
             </button>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
+        </>}
 
           <DropdownMenuItem>
             <button onClick={() => signOut()} className="flex items-center gap-2">
