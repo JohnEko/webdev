@@ -22,7 +22,7 @@ app.prepare().then(() => {
 
     
      io.on("connection", (socket) => {
-     console.log("<<<<< connected")
+     console.log("connected >>>>>>")
      socket.on('addOnlineUsers', (userId) => {
         if(userId && !onLineUsers.has(userId)){
             onLineUsers.set(userId, {
@@ -33,6 +33,18 @@ app.prepare().then(() => {
 
         console.log("Current Online Users:", Array.from(onLineUsers.entries()))
      })
+
+     socket.on('onNotification', (recipientId) => {
+      const recipient = onLineUsers.get(recipientId)
+
+      if(recipient){
+        io.to(recipient.socketId).emit("getNotification")
+      }else {
+        console.log(`Recipient with ID ${recipientId} is not online`)
+      }
+     })
+
+
 
      socket.on('disconnect', () => {
         onLineUsers.forEach((value, key) => {
@@ -47,7 +59,7 @@ app.prepare().then(() => {
 
   httpServer
     .once("error", (err) => {
-      console.error(err);
+      console.log(err);
       process.exit(1);
     })
     .listen(port, () => {

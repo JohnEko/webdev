@@ -9,6 +9,7 @@ import TexteraField from '../common/TexAreaField'
 import { addComments } from '@/actions/comments/add-comments'
 import { toast } from 'react-hot-toast'
 import { createNotification } from '@/actions/notifications/createNotification'
+import { useSocket } from '@/context/SocketContext'
 
 interface IAddCommentsProps{
     blogId: string
@@ -22,6 +23,8 @@ interface IAddCommentsProps{
 const AddCommentsForm = ({blogId, userId, parentId, repliedToId, placeholder, creatorId}: IAddCommentsProps) => {
     
     const [isPending, startTransition] = useTransition()
+    const {sendNotification} = useSocket()
+
     const {register, handleSubmit, formState: {errors}, reset} = useForm<CommentSchemaType>({
         resolver: zodResolver(CommentSchema)
     })
@@ -43,7 +46,8 @@ const AddCommentsForm = ({blogId, userId, parentId, repliedToId, placeholder, cr
                             content: data.content
                     })
 
-                    //send notification realtime using socketio
+                    //send notification realtime using socket.io
+                    sendNotification(repliedToId)
                 }
 
                  if(creatorId){
@@ -55,7 +59,10 @@ const AddCommentsForm = ({blogId, userId, parentId, repliedToId, placeholder, cr
                             content: data.content
                     })
 
-                }    //send notification realtime using socketio
+                        //send notification realtime using socketio
+                        sendNotification(creatorId)
+
+                }    
 
                  toast.success(res.success)
                     reset()
